@@ -1,0 +1,101 @@
+1. Podstawy rozgrywki
+2. Postać
+3. Ekwipunek
+4. Świat
+5. Potwory
+6. Miasto
+7. Postęp
+8. Endgame
+
+1.
+Gra typu roguelike-alike platformer,
+Gracz podróżuje po losowo generowanych światach gdzie wykonuje pomniejsze zadania,
+które wpływają na rozwój miasta (patrz dalej).
+Przed przystąpieniem do rozgrywki (przejścia przez portal) gracz może się dozbroić w sklepach.
+Zakończeniu jednego cyklu rozgrywki mija 10 lat (miasto się rozwija, bohater starzeje)
+i powtarza się aż do pełnego rozwoju miasta i jednego z zakończeń.
+
+2. Postać jest generowana losowo
++domyślnie 2 zalety i 1 wada.
++Po 10 latach (+zaleta), po 20 latach (+zaleta +wada), po 30 latach (+wada)
++po 3 sesjach (30 lat) postać jest za stara na dalsze przygody wybierany jest potomek który dziedziczy
++dziedziczy: 1 zalete (los), 1 zalete (wybr), 1 zalete(los z puli),  1 wade (los z puli) - łącznie  1 wada 3 zalety
+potomek moze mieć  7 zalet i 3 wady. (co roku 2z+1w)
+
+śmierć:
++losowana jest nowa postać
++to co gracz uzbierał w czasie podróży jest częściowo tracone (25% surowców 33% przedmiotów)
++nie ma szans na potomka ( rework maybe? ), ew conajmniej 2/3 służby przeżyte.
+
+3.
+broń (miecze(1h/2h), topory(1h/2h), dzidy(1/2h) | łuki(2h),kusze(1h/2h),pistolety(1h) | różdzki(1h), laski(2h))
+offhand - przedmiot który będzie dawał bonus do trzymanej broni (tarcza(obrona), nóż(dod. obr.), księga(dod. mag.) etc)
+hełm
+zbroja
+spodnie
+buty
+rękawice
+medalion - działa podobnie jak zalety postaci.
+
+ekwipunek zawiera 6-24 slotów na przedmioty.
+Z czego będzie zawierać przedmioty jak zwoje, potiony, jedzenie (tylko leczy) ,surowce(do craftingu), przedmioty z misji.
+
+przedmioty się łatwo zużywają (max 2-3 misje).
+gdy bohater umrze dodatkowo -25% zużycia.
+istnieją sety z craftingu, które są dla 1 postaci ( nie dziedziczone | niszczone po śmierci | nie psują się | niezdejmowalne ).
+sety z craftingu dodają dodatkową ceche dla postaci ( unikatową dla setu ).
+
+4. Światy generowane losowo
+podział na typy: (piekielne, las, pustynia )
+według typu dobór mobów i lootu
+losowo generowane struktury + lochy
+prawie niezniszczalny teren (?) [ ew widoczne bloki do zniszczenia ]
+losowe zadania (zbierz dany item, pokonaj danego bossa, przetrwaj x czasu, uratuj osobe,  ) [ jako warunek powrotu ]
+
+5.
+Ważne żeby miały różne zachowania
+teleportujące się, leczace pozostałych, wskrzeszające, manipulujące pozycją gracza
+zatruwające, leczące się krwią, blokujące
+
+6.
+Miasto rozwija się (npc się wprowadzają coraz lepsze budynki i tyle kurwa)
+Drzewiec przy którym jest portal, daje rady. (co 10 lat nowe 3 losowe rady).
+Sklepy (gotowe [podstawowe] itemy)
+Kowal (craftuje ekwipunek) (jakość > materiał)
+Inwestor
+Hazardzista [ max 3 wygrane z nim co 10 lat ]
+(możliwe postaci dałoby się uratować w czasie pobytu w innym świecie)
+
+7.
+Rozwój:
++Skarby z za światów
++Wykonywanie zadania (zdobądź X)
+-Atakowanie neutralnych
+
+>światy cywilizowane gdzie można robić misje w miastach
+>światy dzikie gdzie trzeba robić dziwne rzeczy ???
+
+>gracz umiera, ciało zostaje przywołane przez drzewca - stracone 33% zdobyczy i 66% przedmiotów
+>gracz uzywa kamienia żeby wrócić - nic nie traci
+>gracz pokonuje bossa i wraca - dodatkowe punkty
+
+inventory
+how to do
+
+
+player:
+health, energy, mana
+buffs, debuffs
+talents:
+  + Combat Proficiency - Melee Damage, Melee energy costs, Melee Critical Chance
+    High - +15% Melee DMG, -20% Swing Energy,  +5% Critical Chance
+    Gret - +30% Melee DMG, -50& Swing Energy, +10% Critical Chance
+  + Archery Proficiency - ++Arrow Damage, Arrow Charge up, Total Energy
+    High - +10% Arrow DMG, +25% Arrow Charge Up, +20% Energy
+    Gret - +20% Arrow DMG, +50% Arrow Charge Up, +40% Energy
+  + Protection Proficiency - Damage Reduction, Block Efficiency, Block energy cost, Armor Proficiency, Total Health
+    High -
+    Gret -
+  / Magic Proficiency - Magic Damage,
+    High -
+    Gret -

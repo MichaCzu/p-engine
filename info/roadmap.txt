@@ -1,0 +1,40 @@
+PRE-STAGE (DONE!)
+$add inputman (DONE!)
++add controls settings (TODO!)
++add controls saving (TODO!)
++add quality get (TODO!)
++add complete settings saving (DONE!)
+
+STAGE I
++character movement (DONE!)
++character gravity + colission (DONE!)
++basic attack, jump (WORKING ON)
++equipment (WORKING ON)
++inventory (DONE)
++simple mobs
++attacking and blocking
++advanced mobs
++loot
++terrain generation (simple)
+
+STAGE II`
+#Through stage - advanced world generation#
++town generation (basic world)
++creating new game
++saving
++simple background building
++shop
++crafting
+
+STAGE III
++propper gameflow
++prepare content for modding(?)
++basic bugfixes
++quest generation
++INTRO
++town progression
+
+STAGE IV
++ending
++bug fixes
++more bug fixes

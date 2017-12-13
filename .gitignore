@@ -1,0 +1,3 @@
+bin/*
+!bin/res
+.clang_complete

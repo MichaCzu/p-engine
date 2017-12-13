@@ -1,0 +1,15 @@
+// Header for quick including.
+
+#include "pge/constants.hpp"
+#include "pge/core.hpp"
+#include "pge/crypt.hpp"
+#include "pge/debug.hpp"
+#include "pge/draw.hpp"
+#include "pge/file.hpp"
+#include "pge/image.hpp"
+#include "pge/ini.hpp"
+#include "pge/input.hpp"
+#include "pge/locale.hpp"
+#include "pge/sound.hpp"
+#include "pge/text.hpp"
+#include "pge/types.hpp"
