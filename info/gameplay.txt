@@ -24,7 +24,7 @@ potomek moze mieć  7 zalet i 3 wady. (co roku 2z+1w)
 
 śmierć:
 +losowana jest nowa postać
-+to co gracz uzbierał w czasie podróży jest częściowo tracone (25% surowców 33% przedmiotów)
++to co gracz uzbierał w czasie podróży jest częściowo tracone (25%-75% surowców 33%-66% przedmiotów)
 +nie ma szans na potomka ( rework maybe? ), ew conajmniej 2/3 służby przeżyte.
 
 3.
@@ -62,8 +62,10 @@ Miasto rozwija się (npc się wprowadzają coraz lepsze budynki i tyle kurwa)
 Drzewiec przy którym jest portal, daje rady. (co 10 lat nowe 3 losowe rady).
 Sklepy (gotowe [podstawowe] itemy)
 Kowal (craftuje ekwipunek) (jakość > materiał)
+Zaklinacz
 Inwestor
 Hazardzista [ max 3 wygrane z nim co 10 lat ]
+Kapłan (wskrzeszenie){soulstone}
 (możliwe postaci dałoby się uratować w czasie pobytu w innym świecie)
 
 7.
@@ -77,7 +79,7 @@ Rozwój:
 
 >gracz umiera, ciało zostaje przywołane przez drzewca - stracone 33% zdobyczy i 66% przedmiotów
 >gracz uzywa kamienia żeby wrócić - nic nie traci
->gracz pokonuje bossa i wraca - dodatkowe punkty
+>gracz pokonuje bossa i wraca - dodatkowe punkty (???)
 
 inventory
 how to do
@@ -99,3 +101,18 @@ talents:
   / Magic Proficiency - Magic Damage,
     High -
     Gret -
+	
+klasy:
+	siła(45%)
+		barbarzyńca (furia)
+		rycerz (balans)
+		+paladyn (wiara)
+	zręczność(35%)
+		łowca (energia)
+		złodziej (energia)
+		+
+	inteligencja(20%)
+		arkanista (arkanum)
+		elementalista (żywioły)
+		+kleryk (wiara)
+		warlock/nekromanta
