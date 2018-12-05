@@ -1,6 +1,6 @@
 # README
 
-P-Engine - Simple application engine using SDL2
+ShatteredLands
 
 ## Building:
 
@@ -19,30 +19,30 @@ Otherwise just use cmake and then make to compile and run this project.
 - SDL2_mixer
 - SDL2_ttf
 - SDL_gpu
-- boost
+- //boost
 
 ## Subsystems/Headers:
 I know those names are silly but they just makes it easier for me to work with.
 
 - constants.hpp - important variables for quick engine configuration.
 - core.hpp - initialization, engine cleaning, game loop managment and game states managment.
-- debugger.hpp - creating logs.
+- debug.hpp - creating logs.
 - engine.hpp - header for quick including.
 - types.hpp - engine variables definitions.
 - stateman.hpp - game state template.
-- designer.hpp - viewport managment, calculating drawing scale and offset, primitive drawing.
-- resourcer.hpp - loading, managing and drawing sprites on screen.
-- jukebox.hpp - loading, managing and playing sounds and music.
-- writer.hpp - loading, managing and drawing text.
-- translator.hpp - loading and managing game locale files.
-- hotkeyer.hpp - managing game controls, getting text input.
-- packman.hpp - loading files from and managing packs.
-- crypter.hpp - encrypting and decrypting strings, files and whole packs.
-- fileman.hpp - saving and loading text files.
-- iniman.hpp - for handling .ini styled data files.
+- draw.hpp - viewport managment, calculating drawing scale and offset, primitive drawing.
+- image.hpp - loading, managing and drawing sprites on screen.
+- sound.hpp - loading, managing and playing sounds and music.
+- text.hpp - loading, managing and drawing text.
+- locale.hpp - loading and managing game locale files.
+- input.hpp - managing game controls, getting text input.
+- crypt.hpp - encrypting and decrypting strings, files and whole packs.
+- file.hpp - saving and loading text files.
+- ini.hpp - for handling .ini styled data files.
 
 planned for later:
 
-- networker.hpp - for multiplayer purposes and website communication (Curl + SDL_net)
-- achiever.hpp - for achivement ( possibly steamapi )
-- threadman.hpp - for very easy multihtreading implementation.
+- archive.hpp - loading files from and managing resource packs.
+- network.hpp - for multiplayer purposes and website communication (Curl / SDL_net)
+- achiev.hpp - for achivement ( possibly steamapi )
+- thread.hpp - for very easy multihtreading implementation.
