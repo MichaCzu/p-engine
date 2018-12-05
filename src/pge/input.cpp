@@ -12,7 +12,7 @@ struct StructAxis {
     SDL_GameControllerAxis gaxis = SDL_CONTROLLER_AXIS_INVALID;
     SDL_Scancode axism = SDL_SCANCODE_UNKNOWN;
     SDL_Scancode axisp = SDL_SCANCODE_UNKNOWN;
-    float state = 0;
+    float state = 0.f;
 };
 
 struct StructControls {
@@ -27,15 +27,22 @@ struct StructControls {
 StructAxis vAxis[] = {
     { ea_movex, L"move_x", SDL_CONTROLLER_AXIS_LEFTX, SDL_SCANCODE_A, SDL_SCANCODE_D },
     { ea_movey, L"move_y", SDL_CONTROLLER_AXIS_LEFTY, SDL_SCANCODE_W, SDL_SCANCODE_S },
-    //{ ea_viewx, L"view_y", SDL_CONTROLLER_AXIS_ },
-    //{ ea_viewy, L"view_y", SDL_CONTROLLER_AXIS_ },
-    //{ ea_trigl, L"trigger_L, SDL_CONTROLLER_AXIS_ },
-    //{ ea_rigrr, L"trigger_R", SDL_CONTROLLER_AXIS_ },
+    { ea_viewx, L"view_y", SDL_CONTROLLER_AXIS_RIGHTX },
+    { ea_viewy, L"view_y", SDL_CONTROLLER_AXIS_RIGHTY },
+    { ea_trigl, L"trigger_L", SDL_CONTROLLER_AXIS_TRIGGERLEFT, SDL_SCANCODE_Q },
+    { ea_trigr, L"trigger_R", SDL_CONTROLLER_AXIS_TRIGGERRIGHT, SDL_SCANCODE_E }
 };
 
 StructControls vCtrls[] = {
     { ec_apply, L"apply", SDL_SCANCODE_Z, SDL_CONTROLLER_BUTTON_A, SDL_SCANCODE_RETURN },
     { ec_back, L"back", SDL_SCANCODE_X, SDL_CONTROLLER_BUTTON_B },
+    { ec_skill1, L"skill1", SDL_SCANCODE_1, SDL_CONTROLLER_BUTTON_DPAD_LEFT },
+    { ec_skill2, L"skill2", SDL_SCANCODE_2, SDL_CONTROLLER_BUTTON_DPAD_UP },
+    { ec_skill3, L"skill3", SDL_SCANCODE_3, SDL_CONTROLLER_BUTTON_DPAD_RIGHT },
+    { ec_trinket, L"trinket", SDL_SCANCODE_R, SDL_CONTROLLER_BUTTON_LEFTSHOULDER },
+    { ec_item, L"item", SDL_SCANCODE_F, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER },
+    { ec_menu, L"menu", SDL_SCANCODE_ESCAPE, SDL_CONTROLLER_BUTTON_START },
+    { ec_inventory, L"inventory", SDL_SCANCODE_Q, SDL_CONTROLLER_BUTTON_BACK },
     //{ ec_, L"" },
 };
 
@@ -94,7 +101,7 @@ bool handle_input_event(SDL_Event& _evn)
         if (_evn.key.repeat != 0)
             break;
         //keyboard button
-        for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)) - 1; i++) {
+        for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)); i++) {
             if (_evn.key.keysym.scancode == vCtrls[i].ctrlprim || _evn.key.keysym.scancode == vCtrls[i].ctrlalt)
                 vCtrls[i].state = press;
         }
@@ -106,23 +113,21 @@ bool handle_input_event(SDL_Event& _evn)
                 vAxis[i].state = press ? 1 : (vAxis[i].state != -1 ? 0 : -1);
         }
         break;
+    case SDL_CONTROLLERBUTTONUP:
     case SDL_CONTROLLERBUTTONDOWN:
         //controller button
-        for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)) - 1; i++) {
+        for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)); i++) {
             if (_evn.cbutton.button == vCtrls[i].ctrlbtn) //
                 vCtrls[i].state = _evn.cbutton.state == SDL_PRESSED ? 1 : 0;
         }
         break;
     case SDL_CONTROLLERAXISMOTION:
         //controller axis
-        for (int i = 0; i < (sizeof(vAxis) / sizeof(*vAxis)) - 1; i++) {
+        for (int i = 0; i < (sizeof(vAxis) / sizeof(*vAxis)); i++) {
             if (_evn.caxis.axis == vAxis[i].gaxis)
-                vAxis[i].state = (_evn.caxis.value + 0.5f) / 32767.5;
-
-            if (abs(vAxis[i].state) > 0.9)
-                vAxis[i].state = ceil(vAxis[i].state);
-            else if (abs(vAxis[i].state) < 0.1)
-                vAxis[i].state = 0;
+                vAxis[i].state = (_evn.caxis.value + 0.5f) / 32767.5f;
+            else
+                continue;
         }
         break;
     default:

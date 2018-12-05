@@ -18,11 +18,12 @@ enum en_inputaxis {
 enum en_inputbtn {
     ec_apply,
     ec_back,
-    ec_attack,
-    ec_shiftfor,
-    ec_shiftbac,
-    ec_actionpri,
-    ec_actionsec,
+    ec_skill1,
+    ec_skill2,
+    ec_skill3,
+    ec_trinket,
+    ec_item,
+    ec_menu,
     ec_inventory,
 };
 
