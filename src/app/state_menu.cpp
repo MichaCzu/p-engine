@@ -46,6 +46,17 @@ void State_Menu::handle_events(SDL_Event _event)
 
     ButtA = input::state(ec_apply);
     ButtB = input::state(ec_back);
+    ButtX = input::state(ec_trinket);
+    ButtY = input::state(ec_item);
+    TrigL2 = input::state(ea_trigl);
+    TrigR2 = input::state(ea_trigr);
+    //TrigL1 = input::state(ec_trinket);
+    //TrigR1 = input::state(ec_item);
+    ButtSel = input::state(ec_inventory);
+    ButtSrt = input::state(ec_menu);
+    DPadL = input::state(ec_skill1);
+    DPadU = input::state(ec_skill2);
+    DPadR = input::state(ec_skill3);
 }
 
 void State_Menu::update()
@@ -60,6 +71,12 @@ void State_Menu::draw()
     pge::draw::rectF(0, 0, pge::window::w() / 8, pge::window::h() / 8, SDL_Color{ 200, 200, 200, 255 });
     pge::draw::rectF(0, 0, pge::window::w() / 16, pge::window::h() / 16, SDL_Color{ 230, 230, 230, 255 });
     pge::draw::rectF(pge::window::w(), pge::window::h(), -pge::window::w() / 4, -pge::window::h() / 4, SDL_Color{ 50, 50, 50, 255 });
+
+    float vallX, vallY, vallA;
+    vallA = sqrt(AxisYL * AxisYL + AxisXL * AxisXL);
+    vallX = std::fmin(1.f, vallA) * 64.f * AxisXL / vallA;
+    vallY = std::fmin(1.f, vallA) * 64.f * AxisYL / vallA;
+    pge::draw::line(pge::window::w() / 2, pge::window::h() / 2, pge::window::w() / 2 + vallX, pge::window::h() / 2 + vallY);
 
     if (ButtLS)
         pge::draw::circleF(pge::window::w() / 4 + AxisXL * pge::window::w() / 12, pge::window::h() / 3 + AxisYL * pge::window::w() / 12, 20, SDL_Color{ 200, 200, 255, 255 });
@@ -101,7 +118,8 @@ void State_Menu::draw()
     if (TrigR1)
         pge::draw::rectRF(pge::window::w() * 3 / 4, pge::window::h() / 8, -pge::window::w() / 12, 32, 4, SDL_Color{ 255, 255, 255, 255 });
 
-    const std::wstring tst = L"Zażółć gęślą jaźń.";
+    float ContVal = sqrt(AxisXL * AxisXL + AxisYL * AxisYL);
+    std::wstring tst = L"Zażółć gęślą jaźń. " + std::to_wstring(ContVal);
     float r = 0;
     float rr = fExtra.get_height(tst) + fHuge.get_height(tst) + fBig.get_height(tst) + fTiny.get_height(tst) + fSmall.get_height(tst) + fNormal.get_height(tst);
     pge::draw::rectF(pge::mouse::x() - fExtra.get_width(tst) / 2, pge::mouse::y(), fExtra.get_width(tst), -rr, SDL_Color{ 0, 0, 0, 55 });
