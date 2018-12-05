@@ -24,11 +24,11 @@ uint64_t get_time_passed();
 void delay_frame_difference();
 void handle_allevents();
 void update();
-void update_target();
+void update_target(uint16_t _targetState);
 void handle_statecalls();
 
 void redraw();
-void redraw_target(int calledState);
+void redraw_target(uint16_t _targetState);
 
 bool is_running();
 void quit();

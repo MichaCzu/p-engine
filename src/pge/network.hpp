@@ -2,6 +2,9 @@
 #ifndef PGE_NETWORK_HPP
 #define PGE_NETWORK_HPP
 
+#ifdef NETWORKER_ACTIVE
+#include <SDL2/SDL_net.h>
+#endif
 #include <string>
 #include <vector>
 

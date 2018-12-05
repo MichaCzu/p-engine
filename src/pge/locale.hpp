@@ -29,7 +29,7 @@ enum en_transl {
     et_mmedium,
     et_mlow,
 };
-std::wstring tr_get(en_transl _key);
+std::wstring tr(en_transl _key);
 
 namespace pge::locale {
 

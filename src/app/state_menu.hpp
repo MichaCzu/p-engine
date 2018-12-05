@@ -1,30 +1,31 @@
+#include "app/menu/widget.hpp"
 #include "pge/draw.hpp"
+#include "pge/image.hpp"
+#include "pge/sound.hpp"
 #include "pge/stateman.hpp"
+#include "pge/text.hpp"
 #include "pge/types.hpp"
 
 class MenuClass;
 
 class State_Menu : public pge::State {
-    int w, h;
-    float alpha = 0;
-    uint16_t bgr, bgg, bg1, bg2, bg3, bg4, bg5, bg6, title, playerImg;
-    pge::viewport::View vp;
-    int scale;
-    double xx = 0, yy = 1600;
-    float targ = 1;
-    float fun = 0;
-    float time_passed = 0, pastpassed = 0;
-    uint8_t screen = 0, vscreen = 0;
-    uint16_t sfx1, sfx2;
-    uint16_t fontt, fontf, fonts, fontb;
-    uint8_t quit;
-    MenuClass* menu_active;
-
-    int wa, ha;
-    pge::Rect tileup[16][8], tilebot[16][6];
-    bool tilemidt[16][2];
+    int font_size = 0;
+    float AxisXR = 0, AxisYR = 0;
+    float AxisXL = 0, AxisYL = 0;
+    float TrigL2 = 0, TrigR2 = 0;
+    bool TrigL1 = 0, TrigR1 = 0;
+    bool DPadU = 0, DPadD = 0, DPadR = 0, DPadL = 0;
+    bool ButtSel = 0, ButtSrt = 0, ButtA = 0, ButtB = 0, ButtY = 0, ButtX = 0, ButtGud = 0, ButtLS = 0, ButtRS = 0;
 
 public:
+    pge::text::Font
+        fTiny{ "../res/font/unifont.ttf", pge::text::tiny },
+        fSmall{ "../res/font/unifont.ttf", pge::text::small },
+        fNormal{ "../res/font/unifont.ttf", pge::text::normal },
+        fBig{ "../res/font/unifont.ttf", pge::text::big },
+        fHuge{ "../res/font/unifont.ttf", pge::text::huge },
+        fExtra{ "../res/font/unifont.ttf", pge::text::extra };
+
     State_Menu() { init(); }
     ~State_Menu() { cleanup(); }
     void init();

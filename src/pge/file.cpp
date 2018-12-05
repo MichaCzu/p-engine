@@ -1,5 +1,5 @@
 #include "pge/file.hpp"
-#include <boost/filesystem.hpp>
+//#include <boost/filesystem.hpp>
 #include <codecvt>
 #include <fstream>
 #include <iostream>
@@ -89,7 +89,7 @@ bool write(std::string path, std::wstring value, int mode)
         fileio.imbue(std::locale(fileio.getloc(),
             new std::codecvt_utf8<wchar_t, 0x10ffff, std::little_endian>));
 
-        for (uint i = 0; i < value.length(); i++) {
+        for (uint16_t i = 0; i < value.length(); i++) {
             fileio.put(value[i]);
         }
     }
@@ -99,6 +99,7 @@ bool write(std::string path, std::wstring value, int mode)
 std::vector<std::string> get_folderlist(std::string path)
 {
     std::vector<std::string> buffer;
+    /*
     boost::filesystem::path p(path);
     for (auto i = boost::filesystem::directory_iterator(p); i != boost::filesystem::directory_iterator(); i++) {
         if (!boost::filesystem::is_directory(i->path())) {
@@ -107,6 +108,7 @@ std::vector<std::string> get_folderlist(std::string path)
         } else
             continue;
     }
+    */
     return buffer;
 }
 }

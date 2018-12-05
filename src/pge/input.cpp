@@ -1,42 +1,48 @@
 #include "pge/input.hpp"
+#include "pge/debug.hpp"
+#include "pge/draw.hpp"
 #include "pge/ini.hpp"
 #include <string>
 
-SDL_Scancode co_get(en_contrls _key, bool sec) { return pge::input::get(_key, sec); }
-bool co_check(SDL_Scancode _evn, en_contrls _key)
-{
-    if (_evn == co_get(_key) || _evn == co_get(_key, 1))
-        return true;
-    else
-        return false;
-}
-
 namespace pge::input {
 
+struct StructAxis {
+    en_inputaxis id;
+    std::wstring param;
+    SDL_GameControllerAxis gaxis = SDL_CONTROLLER_AXIS_INVALID;
+    SDL_Scancode axism = SDL_SCANCODE_UNKNOWN;
+    SDL_Scancode axisp = SDL_SCANCODE_UNKNOWN;
+    float state = 0;
+};
+
 struct StructControls {
-    uint16_t id; //insert enum shortcut (not necessary)
+    en_inputbtn id; //insert enum shortcut (not necessary)
     std::wstring param; //insert ini param to look for
-    SDL_Scancode ctrl1 = SDL_SCANCODE_UNKNOWN; //insert default value
-    SDL_Scancode ctrl2 = SDL_SCANCODE_UNKNOWN; //insert default value
+    SDL_Scancode ctrlprim = SDL_SCANCODE_UNKNOWN; //insert default value
+    SDL_GameControllerButton ctrlbtn = SDL_CONTROLLER_BUTTON_INVALID;
+    SDL_Scancode ctrlalt = SDL_SCANCODE_UNKNOWN; //insert default value
+    bool state = false;
+};
+
+StructAxis vAxis[] = {
+    { ea_movex, L"move_x", SDL_CONTROLLER_AXIS_LEFTX, SDL_SCANCODE_A, SDL_SCANCODE_D },
+    { ea_movey, L"move_y", SDL_CONTROLLER_AXIS_LEFTY, SDL_SCANCODE_W, SDL_SCANCODE_S },
+    //{ ea_viewx, L"view_y", SDL_CONTROLLER_AXIS_ },
+    //{ ea_viewy, L"view_y", SDL_CONTROLLER_AXIS_ },
+    //{ ea_trigl, L"trigger_L, SDL_CONTROLLER_AXIS_ },
+    //{ ea_rigrr, L"trigger_R", SDL_CONTROLLER_AXIS_ },
 };
 
 StructControls vCtrls[] = {
-    { ec_up, L"up", SDL_SCANCODE_UP },
-    { ec_down, L"down", SDL_SCANCODE_DOWN },
-    { ec_left, L"left", SDL_SCANCODE_LEFT },
-    { ec_right, L"right", SDL_SCANCODE_RIGHT },
-    { ec_apply, L"apply", SDL_SCANCODE_Z, SDL_SCANCODE_RETURN },
-    { ec_back, L"back", SDL_SCANCODE_X },
-    { ec_sprint, L"sprint", SDL_SCANCODE_LSHIFT },
-    { ec_jump, L"jump", SDL_SCANCODE_UP },
-    { ec_shiftfor, L"shift_forward", SDL_SCANCODE_S },
-    { ec_shiftbac, L"shift_backward", SDL_SCANCODE_A },
-    { ec_actionpri, L"action_primary", SDL_SCANCODE_Z },
-    { ec_actionsec, L"action_secondary", SDL_SCANCODE_X },
-    { ec_inventory, L"inventory", SDL_SCANCODE_F },
+    { ec_apply, L"apply", SDL_SCANCODE_Z, SDL_CONTROLLER_BUTTON_A, SDL_SCANCODE_RETURN },
+    { ec_back, L"back", SDL_SCANCODE_X, SDL_CONTROLLER_BUTTON_B },
     //{ ec_, L"" },
 };
 
+float get_state(en_inputaxis _ctrl) { return vAxis[_ctrl].state; }
+bool get_state(en_inputbtn _ctrl) { return vCtrls[_ctrl].state; }
+
+/*
 bool load(std::string _path)
 {
     int a = ini::open(_path);
@@ -76,4 +82,87 @@ void resort()
         }
     }
 }
+*/
+
+bool handle_input_event(SDL_Event& _evn)
+{
+    bool press = _evn.key.state == SDL_PRESSED ? 1 : 0;
+
+    switch (_evn.type) {
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+        if (_evn.key.repeat != 0)
+            break;
+        //keyboard button
+        for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)) - 1; i++) {
+            if (_evn.key.keysym.scancode == vCtrls[i].ctrlprim || _evn.key.keysym.scancode == vCtrls[i].ctrlalt)
+                vCtrls[i].state = press;
+        }
+        //keyboard axis
+        for (int i = 0; i < (sizeof(vAxis) / sizeof(*vAxis)); i++) {
+            if (_evn.key.keysym.scancode == vAxis[i].axism)
+                vAxis[i].state = press ? -1 : (vAxis[i].state != 1 ? 0 : 1);
+            if (_evn.key.keysym.scancode == vAxis[i].axisp)
+                vAxis[i].state = press ? 1 : (vAxis[i].state != -1 ? 0 : -1);
+        }
+        break;
+    case SDL_CONTROLLERBUTTONDOWN:
+        //controller button
+        for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)) - 1; i++) {
+            if (_evn.cbutton.button == vCtrls[i].ctrlbtn) //
+                vCtrls[i].state = _evn.cbutton.state == SDL_PRESSED ? 1 : 0;
+        }
+        break;
+    case SDL_CONTROLLERAXISMOTION:
+        //controller axis
+        for (int i = 0; i < (sizeof(vAxis) / sizeof(*vAxis)) - 1; i++) {
+            if (_evn.caxis.axis == vAxis[i].gaxis)
+                vAxis[i].state = (_evn.caxis.value + 0.5f) / 32767.5;
+
+            if (abs(vAxis[i].state) > 0.9)
+                vAxis[i].state = ceil(vAxis[i].state);
+            else if (abs(vAxis[i].state) < 0.1)
+                vAxis[i].state = 0;
+        }
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+}
+
+namespace input {
+float state(en_inputaxis _ctrl) { return pge::input::get_state(_ctrl); }
+bool state(en_inputbtn _ctrl) { return pge::input::get_state(_ctrl); }
+
+std::vector<en_inputbtn> get(SDL_Scancode& _evn)
+{
+    std::vector<en_inputbtn> flag;
+    for (auto& val : pge::input::vCtrls) {
+        if (_evn == val.ctrlprim || val.ctrlalt == _evn) {
+            flag.push_back(val.id);
+            //pge::debug::log(std::string(val.param.begin(), val.param.end()));
+        }
+    }
+    return flag;
+}
+}
+
+namespace pge::mouse {
+
+int x()
+{
+    int x, flag;
+    SDL_GetMouseState(&x, &flag);
+    return x;
+}
+int y()
+{
+    int y, flag;
+    SDL_GetMouseState(&flag, &y);
+    return y;
+}
+void state(int* x, int* y) { SDL_GetMouseState(x, y); }
+void set(int x, int y) { SDL_WarpMouseInWindow(SDL_GetWindowFromID(window::get_target()->context->windowID), x, y); }
 }

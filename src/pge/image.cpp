@@ -1,6 +1,7 @@
 #include "pge/image.hpp"
 #include "SDL2/SDL.h"
 #include "pge/core.hpp"
+#include "pge/crypt.hpp"
 #include "pge/debug.hpp"
 #include "pge/draw.hpp"
 #include <SDL2/SDL_gpu.h>
@@ -26,7 +27,7 @@ uint16_t load(std::string _path)
     SDL_Surface* loadSurface = IMG_Load(_path.c_str());
     uint16_t _id = (uint16_t)-1;
     debug::log("Loading " + _path);
-    if (!loadSurface) {
+	if (!loadSurface) {
         if (pge::is_running())
             debug::prompt("Missing file", "Couldn't load" + _path + " | reason: " + IMG_GetError(), 2);
         debug::log("Aborting...");
@@ -54,6 +55,14 @@ uint16_t load(std::string _path)
     }
 
     return _id;
+}
+
+uint16_t load_ex(std::string _path, char* key)
+{
+    pge::crypt::file(_path);
+    uint16_t flag = load(_path);
+    pge::crypt::file(_path);
+    return flag;
 }
 
 bool load_target(uint16_t text)

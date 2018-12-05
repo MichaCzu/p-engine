@@ -4,7 +4,7 @@
 
 uint8_t defvol = 128;
 
-namespace pge::chunk {
+namespace pge::sound {
 struct StructChunk {
     Mix_Chunk* chunk;
     int8_t volume;
@@ -43,7 +43,7 @@ bool free(std::string _path)
 {
     for (int i = 0; i < vChunk.size(); i++) {
         if (vChunk[i]->path == _path) {
-            chunk::free(i);
+            sound::free(i);
             return true;
         }
     }
@@ -72,7 +72,7 @@ bool is_free(uint16_t _id)
 void purgeall()
 {
     for (int i = vChunk.size() - 1; i >= 0; i--) {
-        chunk::free((uint16_t)i);
+        sound::free((uint16_t)i);
         vChunk.pop_back();
     }
 }

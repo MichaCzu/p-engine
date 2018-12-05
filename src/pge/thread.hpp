@@ -13,7 +13,6 @@ namespace thread {
         PRIORITY_NORMAL = 0b0010,
         PRIORITY_HIGH = 0b0100,
         PRIORITY_REAL = 0b1000,
-
     };
 
     void create(void* function, en_priority priority, void* parameters);

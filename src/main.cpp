@@ -1,19 +1,20 @@
 #include "pge/constants.hpp"
 #include "pge/core.hpp"
+#include "pge/debug.hpp"
 #include "pge/draw.hpp"
 #include <SDL2/SDL.h>
-#include <cstdio>
 #include <iostream>
 
-#include <curl/curl.h>
-#include <stdio.h>
 #include <vector>
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
     pge::init();
     pge::state::push(pge::es_intro);
     pge::handle_statecalls();
+
+    //    float asd = 100;
+    //    i_expect_int(&asd);
 
     //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     // main game loop

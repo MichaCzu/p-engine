@@ -2,7 +2,7 @@
 #include "pge/ini.hpp"
 #include <string>
 
-std::wstring tr_get(en_transl _key) { return pge::locale::get(_key); }
+std::wstring tr(en_transl _key) { return pge::locale::get(_key); }
 
 namespace pge::locale {
 

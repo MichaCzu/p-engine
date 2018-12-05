@@ -4,7 +4,6 @@ class Controller;
 class State_Game : public pge::State {
     int w, h;
     float alpha;
-    Controller* control;
     int fontf;
 
 public:

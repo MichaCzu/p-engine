@@ -1,37 +1,22 @@
 #include "app/state_intro.hpp"
-#include "app/menu/settings_man.hpp"
 #include "pge/core.hpp"
 #include "pge/pge.hpp"
+#include "pge/sound.hpp"
 #include <iostream>
 #include <stdint.h>
 
 void State_Intro::init()
 {
-    settings_load();
-    pge::crypt::file("res/spr/pgi/logo.pgs");
-    sLogo = pge::image::load("res/spr/pgi/logo.pgs");
-    pge::image::set_filter(sLogo, GPU_FILTER_LINEAR);
-    pge::crypt::file("res/spr/pgi/logo.pgs");
-
-    pge::crypt::file("res/spr/pgi/spin.pgs");
-    sSpin = pge::image::load("res/spr/pgi/spin.pgs");
-    pge::image::set_filter(sSpin, GPU_FILTER_LINEAR);
-    pge::crypt::file("res/spr/pgi/spin.pgs");
-
-    pge::crypt::file("res/spr/pgi/sout.pgs");
-    sSout = pge::image::load("res/spr/pgi/sout.pgs");
-    pge::image::set_filter(sSout, GPU_FILTER_LINEAR);
-    pge::crypt::file("res/spr/pgi/sout.pgs");
-
-    pge::crypt::file("res/spr/pgi/pi.pgs");
-    sPi = pge::image::load("res/spr/pgi/pi.pgs");
-    pge::image::set_filter(sPi, GPU_FILTER_LINEAR);
-    pge::crypt::file("res/spr/pgi/pi.pgs");
-
-    pge::crypt::file("res/spr/pgi/ilum.pgs");
-    sIlum = pge::image::load("res/spr/pgi/ilum.pgs");
-    pge::image::set_filter(sIlum, GPU_FILTER_LINEAR);
-    pge::crypt::file("res/spr/pgi/ilum.pgs");
+    //pge::crypt::file_ex("../res/spr/pgi/logo.pgs","../res/spr/pgi/logo.png");
+    //pge::crypt::file_ex("../res/spr/pgi/spin.pgs","../res/spr/pgi/spin.png");
+    //pge::crypt::file_ex("../res/spr/pgi/sout.pgs","../res/spr/pgi/sout.png");
+    //pge::crypt::file_ex("../res/spr/pgi/pi.pgs","../res/spr/pgi/pi.png");
+    //pge::crypt::file_ex("../res/spr/pgi/ilum.pgs","../res/spr/pgi/ilum.png");
+    sLogo.set_filter(GPU_FILTER_LINEAR);
+    sSpin.set_filter(GPU_FILTER_LINEAR);
+    sSout.set_filter(GPU_FILTER_LINEAR);
+    sPi.set_filter(GPU_FILTER_LINEAR);
+    sIlum.set_filter(GPU_FILTER_LINEAR);
 }
 
 void State_Intro::cleanup()
@@ -68,7 +53,7 @@ void State_Intro::draw()
         counter += pge::get_time_difference();
     if (counter >= 5000) {
         counter = 5000;
-        std::cout << "changing state to menu..." << std::endl;
+        pge::debug::log("changing state to menu...");
         pge::state::drop(pge::es_menu);
     }
 
@@ -86,26 +71,23 @@ void State_Intro::draw()
     else
         scale = 0.5;
 
-    int sLW = pge::image::get_width(sLogo) / 2 * scale;
-    int sPW = pge::image::get_width(sPi) / 2 * scale;
-    int sPH = pge::image::get_height(sPi) / 2 * scale;
-    int sIW = pge::image::get_width(sIlum) / 2 * scale;
-    int sIH = pge::image::get_height(sIlum) / 2 * scale;
+    int sLW = sLogo.get_width() / 2 * scale;
+    int sPW = sPi.get_width() / 2 * scale;
+    int sPH = sPi.get_height() / 2 * scale;
+    int sIW = sIlum.get_width() / 2 * scale;
+    int sIH = sIlum.get_height() / 2 * scale;
 
     //pge::media_setalpha_texture(sSpin, 255);
 
-    pge::image::draw(sSpin, w / 2 - s2.w * scale / 2 + 20 * scale, h / 2 - s2.h * scale / 2 - 150 * scale, &s2, NULL, -rotate / 16, scale, scale);
+    sSpin.draw(w / 2 - s2.w * scale / 2 + 20 * scale, h / 2 - s2.h * scale / 2 - 150 * scale, &s2, NULL, -rotate / 16, scale, scale);
+    sSpin.draw(w / 2 - s3.w * scale / 2 + 105 * scale, h / 2 - s3.h * scale / 2, &s3, NULL, rotate / 8, scale, scale);
+    sSpin.draw(w / 2 - s1.w * scale / 2 - 135 * scale, h / 2 - s1.h * scale / 2 + 40 * scale, &s1, NULL, rotate / 24, scale, scale);
 
-    pge::image::draw(sSpin, w / 2 - s3.w * scale / 2 + 105 * scale, h / 2 - s3.h * scale / 2, &s3, NULL, rotate / 8, scale, scale);
-
-    pge::image::draw(sSpin, w / 2 - s1.w * scale / 2 - 135 * scale, h / 2 - s1.h * scale / 2 + 40 * scale, &s1, NULL, rotate / 24, scale, scale);
-
-    pge::image::draw(sSout, w / 2 - s1.w * scale / 2 - 135 * scale, h / 2 - s1.h * scale / 2 + 40 * scale, &s1, NULL, rotate / 24, scale, scale);
-    pge::image::draw(sSout, w / 2 - s2.w * scale / 2 + 20 * scale, h / 2 - s2.h * scale / 2 - 150 * scale, &s2, NULL, -rotate / 16, scale, scale);
-    pge::image::draw(sSout, w / 2 - s3.w * scale / 2 + 105 * scale, h / 2 - s3.h * scale / 2, &s3, NULL, rotate / 8, scale, scale);
-    uint32_t color = 0;
-    pge::image::draw(sIlum, w / 2 - sIW - 45 * scale, h / 2 - sIH - 30 * scale, NULL, NULL, 0, scale, scale);
-    pge::image::draw(sLogo, w / 2 - sLW - 40 * scale, h / 2 + sPH - 80 * scale, NULL, NULL, 0, scale, scale);
-    pge::image::draw(sPi, w / 2 - sPW, h / 2 - sPH - 50 * scale, NULL, NULL, 0, scale, scale);
-    pge::draw::rectFill(w / 2 - 500 * scale, h / 2 - 500 * scale, 1000 * scale, 1000 * scale, SDL_Color{ 0, 0, 0, 255 - aPi });
+    sSout.draw(w / 2 - s1.w * scale / 2 - 135 * scale, h / 2 - s1.h * scale / 2 + 40 * scale, &s1, NULL, rotate / 24, scale, scale);
+    sSout.draw(w / 2 - s2.w * scale / 2 + 20 * scale, h / 2 - s2.h * scale / 2 - 150 * scale, &s2, NULL, -rotate / 16, scale, scale);
+    sSout.draw(w / 2 - s3.w * scale / 2 + 105 * scale, h / 2 - s3.h * scale / 2, &s3, NULL, rotate / 8, scale, scale);
+    sIlum.draw(w / 2 - sIW - 45 * scale, h / 2 - sIH - 30 * scale, NULL, NULL, 0, scale, scale);
+    sLogo.draw(w / 2 - sLW - 40 * scale, h / 2 + sPH - 80 * scale, NULL, NULL, 0, scale, scale);
+    sPi.draw(w / 2 - sPW, h / 2 - sPH - 50 * scale, NULL, NULL, 0, scale, scale);
+    pge::draw::rectF(w / 2 - 500 * scale, h / 2 - 500 * scale, 1000 * scale, 1000 * scale, SDL_Color{ 0, 0, 0, Uint8(255 - aPi) });
 }

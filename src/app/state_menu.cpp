@@ -1,92 +1,13 @@
 #include "app/state_menu.hpp"
-#include "app/game/enviroment_controller.hpp"
-#include "app/menu/menu_class.hpp"
-#include "app/menu/menu_credits.hpp"
-#include "app/menu/menu_main.hpp"
-#include "app/menu/menu_options.hpp"
-#include "app/menu/menu_optionsc.hpp"
-#include "app/menu/menu_optionsg.hpp"
-#include "app/menu/menu_optionss.hpp"
-#include "app/menu/settings_man.hpp"
+#include "pge/debug.hpp"
 #include "pge/pge.hpp"
 #include <iostream>
 #include <stdint.h>
 
-MenuOptions menu_options;
-MenuMain menu_main;
-MenuCredits menu_credits;
-MenuOptionsG menu_optionsg;
-MenuOptionsS menu_optionss;
+#include "menu/widget_simple.hpp"
 
 void State_Menu::init()
 {
-    sfx1 = pge::chunk::load("res/sfx/ui/move.wav");
-    sfx2 = pge::chunk::load("res/sfx/ui/select.wav");
-    title = pge::image::load("res/spr/hud/menu/title.png");
-    bg1 = pge::image::load("res/spr/bg/plains/0.png");
-    bg2 = pge::image::load("res/spr/bg/plains/1.png");
-    bg3 = pge::image::load("res/spr/bg/plains/2.png");
-    bg4 = pge::image::load("res/spr/bg/plains/3.png");
-    bg5 = pge::image::load("res/spr/bg/plains/4.png");
-    bg6 = pge::image::load("res/spr/bg/skies/sky0.png");
-    bgg = pge::image::load("res/spr/env/grass.png");
-    bgr = pge::image::load("res/spr/env/rock.png");
-    playerImg = pge::image::load("res/spr/player/player.png");
-
-    pge::window::get_size(&w, &h);
-    xx = w / 2;
-    pge::random::set_seed(0);
-    pge::draw::set_scale_detail(1);
-    pge::draw::set_scale_factor(w + 359, h + 359, 360);
-    fontt = pge::text::load("res/font/unifont.ttf", 18 * pge::draw::get_scale());
-    fonts = pge::text::load("res/font/unifont.ttf", 14 * pge::draw::get_scale());
-    fontf = pge::text::load("res/font/unifont.ttf", 24);
-    fontb = pge::text::load("res/font/unifont.ttf", 26 * pge::draw::get_scale());
-    pge::music::play(pge::music::load("res/mus/title.ogg"), -1, 1500);
-
-    screen = 0;
-    vp.x = 0;
-    vp.y = 0;
-    menu_main.load(fontt, title);
-    menu_credits.load(fontt, fonts);
-    menu_options.load(fontt, fonts);
-    menu_optionsg.load(fontt, fonts);
-    menu_optionss.load(fontt, fonts);
-    menu_active = &menu_main;
-    pge::random::set_seed();
-    int a = pge::random::get(0, 3);
-
-    for (int i = 0; i < 16; i++) {
-        a = pge::random::get(0, 3);
-        tileup[i][0] = pge::Rect(48 + 12 * a, 60, 12, 12);
-    }
-    for (int i = 0; i < 16; i++) {
-        a = pge::random::get(0, 3);
-        tileup[i][1] = pge::Rect(0 + 12 * a, 36, 12, 12);
-    }
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 2; j++) {
-            a = pge::random::get(0, 7);
-            tileup[i][j + 2] = pge::Rect(a > 3 ? 0 + 12 * (a - 4) : 0 + 12 * a, a > 3 ? 48 : 60, 12, 12);
-        }
-    }
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 4; j++) {
-            a = pge::random::get(0, 7);
-            tilebot[i][j] = pge::Rect(a > 3 ? 0 + 12 * (a - 4) : 0 + 12 * a, a > 3 ? 48 : 60, 12, 12);
-            a = pge::random::get(0, 7);
-            tileup[i][j + 4] = pge::Rect(a > 3 ? 0 + 12 * (a - 4) : 0 + 12 * a, a > 3 ? 48 : 60, 12, 12);
-        }
-    }
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 2; j++) {
-            a = pge::random::get(0, 99);
-            if (a > 40 + j * 40)
-                tilemidt[i][j] = 1;
-            else
-                tilemidt[i][j] = 0;
-        }
-    }
 }
 
 void State_Menu::cleanup()
@@ -106,194 +27,96 @@ void pop_back_utf8(std::string& utf8)
         utf8.resize(cp - utf8.data());
 }
 //WORKS PERFECTLY
+
 void State_Menu::handle_events(SDL_Event _event)
 {
+    pge::input::handle_input_event(_event);
 
-    if (_event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-        pge::window::get_size(&w, &h);
-        pge::draw::set_scale_factor(w + 359, h + 359, 360);
-        pge::text::resize(fontb, 26 * pge::draw::get_scale());
-        pge::text::resize(fontt, 18 * pge::draw::get_scale());
-        pge::text::resize(fonts, 14 * pge::draw::get_scale());
-    } else if (_event.key.type == SDL_KEYDOWN && _event.key.repeat == 0) {
-        if (fun == 1 || (co_check(_event.key.keysym.scancode, ec_apply) && co_check(_event.key.keysym.scancode, ec_back)))
-            menu_active->logic(_event.key.keysym.scancode);
+    if (_event.type == SDL_MOUSEWHEEL) {
+        font_size += _event.wheel.y;
+        fTiny.resize(pge::text::tiny + font_size);
+        fSmall.resize(pge::text::small + font_size);
+        fNormal.resize(pge::text::normal + font_size);
+        fBig.resize(pge::text::big + font_size);
+        fHuge.resize(pge::text::huge + font_size);
+        fExtra.resize(pge::text::extra + font_size);
     }
-    //INPUT TEST
-    //if (_event.type == SDL_TEXTINPUT) {
-    //    text += _event.text.text;
-    //    std::cout << text << std::endl;
-    //}
-    //if (_event.key.type == SDL_KEYDOWN && _event.key.keysym.sym == SDLK_BACKSPACE && SDL_IsTextInputActive() && !text.empty()) {
-    //    pop_back_utf8(text);
-    //    std::cout << text << std::endl;
-    //}
-    //std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    //pge::text::draw(fontf, 4, 16, converter.from_bytes(text), 0x000000FF);
-    //INPUT TEST
+    AxisXL = input::state(ea_movex);
+    AxisYL = input::state(ea_movey);
+
+    ButtA = input::state(ec_apply);
+    ButtB = input::state(ec_back);
 }
+
 void State_Menu::update()
 {
-    xx += 0.025 * pge::get_time_difference();
-    static float campos = 0;
-
-    yy = sin(campos / 5000.0 * M_PI / 2) * 300 + 1300;
-
-    if (campos > 5000)
-        campos = 5000;
-    else if (campos < 5000 && !quit)
-        campos += (float)pge::get_time_difference();
-    else if (quit)
-        campos -= (float)pge::get_time_difference() * 2 / quit;
-
-    float scale = pge::draw::get_scale();
-
-    vp.w = w / scale;
-    vp.h = h / scale;
-    vp.x = xx - vp.w / 2;
-    vp.y = yy - vp.h / 3 * 2;
-
-    uint8_t flagg = menu_active->check(fun);
-    if (flagg <= 100)
-        pge::chunk::play(sfx2);
-    else if (flagg == 128)
-        pge::chunk::play(sfx1);
-
-    if (flagg == 0) {
-        quit = 1;
-        pge::music::stop(1000);
-    } else if (flagg == 99) {
-        quit = 2;
-        pge::music::stop(1000);
-    } else if (flagg <= 5) {
-        vscreen = flagg;
-        targ += 2;
-    }
-
-    if (!quit) {
-        if (alpha > 255)
-            alpha = 255;
-        else if (alpha < 255)
-            alpha += (float)pge::get_time_difference() / 2500.0 * 255.0;
-
-        if (time_passed < targ && time_passed > 1)
-            time_passed += (float)pge::get_time_difference() / 400.f;
-        else if (time_passed < targ && alpha > 0x11)
-            time_passed += (float)pge::get_time_difference() / 750.f;
-        if (time_passed > targ)
-            fun = 1;
-        else
-            fun = fabs(sin(time_passed * M_PI / 2));
-
-        if (pastpassed < fun && screen != vscreen) {
-            screen = vscreen;
-            switch (screen) {
-            case 1:
-                menu_active = &menu_credits;
-                break;
-            case 2:
-                menu_active = &menu_options;
-                break;
-            case 3:
-                menu_active = &menu_optionsg;
-                break;
-            case 4:
-                menu_active = &menu_optionss;
-                break;
-            case 5:
-                menu_active = &menu_main;
-                break;
-            default:
-                break;
-            }
-            menu_active->reload();
-        }
-        pastpassed = fun;
-    } else {
-        if (alpha < 0) {
-            alpha = 0;
-            if (quit == 1) {
-                settings_save();
-                pge::quit();
-            } else if (quit == 2) {
-                pge::state::drop(pge::es_game);
-            }
-        } else if (alpha > 0)
-            alpha -= (float)pge::get_time_difference() / 1000.0 * 255.0 / quit;
-
-        if (time_passed > 1)
-            time_passed = 1;
-        if (time_passed > 0)
-            time_passed -= (float)pge::get_time_difference() / 750.f;
-        if (time_passed < 0)
-            fun = 0;
-        else
-            fun = fabs(sin(time_passed * M_PI / 2));
-    }
 }
 
 void State_Menu::draw()
 {
-    scale = pge::draw::get_scale();
-    int ypos = 1600;
+    pge::draw::rectF(0, 0, pge::window::w() / 4 * 3, pge::window::h() / 4 * 3, SDL_Color{ 50, 50, 50, 255 });
+    pge::draw::rectF(0, 0, pge::window::w() / 2, pge::window::h() / 2, SDL_Color{ 100, 100, 100, 255 });
+    pge::draw::rectF(0, 0, pge::window::w() / 4, pge::window::h() / 4, SDL_Color{ 150, 150, 150, 255 });
+    pge::draw::rectF(0, 0, pge::window::w() / 8, pge::window::h() / 8, SDL_Color{ 200, 200, 200, 255 });
+    pge::draw::rectF(0, 0, pge::window::w() / 16, pge::window::h() / 16, SDL_Color{ 230, 230, 230, 255 });
+    pge::draw::rectF(pge::window::w(), pge::window::h(), -pge::window::w() / 4, -pge::window::h() / 4, SDL_Color{ 50, 50, 50, 255 });
 
-    EController::env_draw_background_sky(bg6, 0x5e7bd1ff, 0x5266ccff, pge::get_time_difference());
-    EController::env_draw_background(bg5, 0.95, ypos, vp);
-    EController::env_draw_background(bg4, 0.80, ypos, vp);
-    EController::env_draw_background(bg3, 0.65, ypos, vp);
-    EController::env_draw_background(bg2, 0.45, ypos, vp);
-    EController::env_draw_background(bg1, 0.25, ypos, vp);
+    if (ButtLS)
+        pge::draw::circleF(pge::window::w() / 4 + AxisXL * pge::window::w() / 12, pge::window::h() / 3 + AxisYL * pge::window::w() / 12, 20, SDL_Color{ 200, 200, 255, 255 });
+    else
+        pge::draw::circleF(pge::window::w() / 4 + AxisXL * pge::window::w() / 12, pge::window::h() / 3 + AxisYL * pge::window::w() / 12, 20, SDL_Color{ 255, 255, 255, 255 });
 
-    float xddd = (w - 130 * scale) / 4;
-    float y = pge::viewport::get_ymoved(1600, &vp);
+    if (ButtRS)
+        pge::draw::circleF(pge::window::w() * 3 / 4 + AxisXR * pge::window::w() / 12, pge::window::h() / 3 * 2 + AxisYR * pge::window::w() / 12, 20, SDL_Color{ 200, 200, 255, 255 });
+    else
+        pge::draw::circleF(pge::window::w() * 3 / 4 + AxisXR * pge::window::w() / 12, pge::window::h() / 3 * 2 + AxisYR * pge::window::w() / 12, 20, SDL_Color{ 255, 255, 255, 255 });
 
-    pge::Rect aa;
-    xddd = (w - 180 * scale) / 4;
-    switch ((int)floor(pge::get_time_passed() % 1000 / 250)) {
-    case 0:
-        aa = pge::Rect(26, 0, 13, 18);
-        pge::image::draw(playerImg, xddd, (y - 18) * scale, &aa, NULL, 0, scale, scale);
-        break;
-    case 1:
-        aa = pge::Rect(39, 0, 13, 18);
-        pge::image::draw(playerImg, xddd, (y - 18.5) * scale, &aa, NULL, 0, scale, scale);
-        break;
-    case 2:
-        aa = pge::Rect(52, 0, 13, 18);
-        pge::image::draw(playerImg, xddd, (y - 18) * scale, &aa, NULL, 0, scale, scale);
-        break;
-    case 3:
-        aa = pge::Rect(65, 0, 13, 18);
-        pge::image::draw(playerImg, xddd, (y - 18.5) * scale, &aa, NULL, 0, scale, scale);
-        break;
-    }
+    pge::draw::rectRF(pge::window::w() / 4, 0, pge::window::w() / 12, TrigL2 * pge::window::h() / 8, 4, SDL_Color{ 255, 255, 255, 255 });
+    pge::draw::rectRF(pge::window::w() * 3 / 4, 0, -pge::window::w() / 12, TrigR2 * pge::window::h() / 8, 4, SDL_Color{ 255, 255, 255, 255 });
 
-    float xxx = fmod(vp.x, 192) * scale;
-    for (int iiw = 0; iiw <= w / (192 * scale) + 1; iiw++) {
-        //first 4 layer
-        for (int i = 0; i < 16; i++)
-            for (int j = 0; j < 6; j++)
-                pge::image::draw(bgg, (iiw * 192 + i * 12) * scale - xxx, (y + j * 12 - 12) * scale, &tileup[i][j], NULL, 0, scale, scale);
-        //mixed next 4 layers
-        for (int i = 0; i < 16; i++)
-            for (int j = 6; j < 8; j++)
-                if (tilemidt[i][j - 6] == 1)
-                    pge::image::draw(bgg, (iiw * 192 + i * 12) * scale - xxx, (y + j * 12 - 12) * scale, &tileup[i][j], NULL, 0, scale, scale);
-                else
-                    pge::image::draw(bgr, (iiw * 192 + i * 12) * scale - xxx, (y + j * 12 - 12) * scale, &tileup[i][j], NULL, 0, scale, scale);
-        //first 4 layer
-        for (int iih = 0; iih <= (h - (y + 84) * scale) / 48 * scale + 1; iih++)
-            for (int i = 0; i < 16; i++)
-                for (int j = 0; j < 4; j++)
-                    pge::image::draw(bgr, (iiw * 192 + i * 12) * scale - xxx, (y + j * 12 + 84 + iih * 48) * scale, &tilebot[i][j], NULL, 0, scale, scale);
-    }
+    if (DPadU)
+        pge::draw::rectRF(32, pge::window::h() - 96, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (DPadD)
+        pge::draw::rectRF(32, pge::window::h() - 32, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (DPadL)
+        pge::draw::rectRF(0, pge::window::h() - 64, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (DPadR)
+        pge::draw::rectRF(64, pge::window::h() - 64, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (ButtSrt)
+        pge::draw::rectRF(pge::window::w() / 2 + 16, pge::window::h() - 32, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (ButtSel)
+        pge::draw::rectRF(pge::window::w() / 2 - 48, pge::window::h() - 32, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (ButtGud)
+        pge::draw::rectRF(pge::window::w() / 2 - 16, pge::window::h() - 32, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (ButtA)
+        pge::draw::rectRF(pge::window::w() - 64, pge::window::h() - 32, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (ButtB)
+        pge::draw::rectRF(pge::window::w() - 32, pge::window::h() - 64, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (ButtY)
+        pge::draw::rectRF(pge::window::w() - 64, pge::window::h() - 96, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (ButtX)
+        pge::draw::rectRF(pge::window::w() - 96, pge::window::h() - 64, 32, 32, 8, SDL_Color{ 255, 255, 255, 255 });
+    if (TrigL1)
+        pge::draw::rectRF(pge::window::w() / 4, pge::window::h() / 8, pge::window::w() / 12, 32, 4, SDL_Color{ 255, 255, 255, 255 });
+    if (TrigR1)
+        pge::draw::rectRF(pge::window::w() * 3 / 4, pge::window::h() / 8, -pge::window::w() / 12, 32, 4, SDL_Color{ 255, 255, 255, 255 });
 
-    //env_draw_background(bg0, 0, ypos, vp, 0x3b3431ff);
-    menu_active->draw(fun);
+    const std::wstring tst = L"Zażółć gęślą jaźń.";
+    float r = 0;
+    float rr = fExtra.get_height(tst) + fHuge.get_height(tst) + fBig.get_height(tst) + fTiny.get_height(tst) + fSmall.get_height(tst) + fNormal.get_height(tst);
+    pge::draw::rectF(pge::mouse::x() - fExtra.get_width(tst) / 2, pge::mouse::y(), fExtra.get_width(tst), -rr, SDL_Color{ 0, 0, 0, 55 });
+    r += fTiny.get_height(tst);
+    fTiny.drawMid(pge::mouse::x(), pge::mouse::y() - r, tst);
+    r += fSmall.get_height(tst);
+    fSmall.drawMid(pge::mouse::x(), pge::mouse::y() - r, tst);
+    r += fNormal.get_height(tst);
+    fNormal.drawMid(pge::mouse::x(), pge::mouse::y() - r, tst);
+    r += fBig.get_height(tst);
+    fBig.drawMid(pge::mouse::x(), pge::mouse::y() - r, tst);
+    r += fHuge.get_height(tst);
+    fHuge.drawMid(pge::mouse::x(), pge::mouse::y() - r, tst);
+    r += fExtra.get_height(tst);
+    fExtra.drawMid(pge::mouse::x(), pge::mouse::y() - r, tst);
 
-    pge::text::draw(fontf, 4, 4, std::to_wstring(pge::get_fps()), SDL_Color{ 255, 255, 255, 255 });
-    if (alpha < 255) {
-        uint32_t color;
-        pge::draw::rectFill(0, 0, w, h, SDL_Color{ 0, 0, 0, 254 - alpha });
-    }
+    fNormal.draw(0, 0, std::to_wstring(pge::get_fps()));
 }
