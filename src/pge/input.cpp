@@ -2,6 +2,7 @@
 #include "pge/debug.hpp"
 #include "pge/draw.hpp"
 #include "pge/ini.hpp"
+#include "pge/types.hpp"
 #include <string>
 
 namespace pge::input {
@@ -34,21 +35,28 @@ StructAxis vAxis[] = {
 };
 
 StructControls vCtrls[] = {
-    { ec_apply, L"apply", SDL_SCANCODE_Z, SDL_CONTROLLER_BUTTON_A, SDL_SCANCODE_RETURN },
-    { ec_back, L"back", SDL_SCANCODE_X, SDL_CONTROLLER_BUTTON_B },
+    { ec_apply, L"apply", SDL_SCANCODE_RETURN, SDL_CONTROLLER_BUTTON_A },
+    { ec_back, L"back", SDL_SCANCODE_ESCAPE, SDL_CONTROLLER_BUTTON_B },
+    { ec_attack, L"attack", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER },
+    { ec_block, L"block", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_LEFTSHOULDER },
     { ec_skill1, L"skill1", SDL_SCANCODE_1, SDL_CONTROLLER_BUTTON_DPAD_LEFT },
     { ec_skill2, L"skill2", SDL_SCANCODE_2, SDL_CONTROLLER_BUTTON_DPAD_UP },
     { ec_skill3, L"skill3", SDL_SCANCODE_3, SDL_CONTROLLER_BUTTON_DPAD_RIGHT },
-    { ec_trinket, L"trinket", SDL_SCANCODE_R, SDL_CONTROLLER_BUTTON_LEFTSHOULDER },
-    { ec_item, L"item", SDL_SCANCODE_F, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER },
+    { ec_trinket, L"trinket", SDL_SCANCODE_R, SDL_CONTROLLER_BUTTON_DPAD_DOWN },
+    { ec_item, L"item", SDL_SCANCODE_Q, SDL_CONTROLLER_BUTTON_X },
     { ec_menu, L"menu", SDL_SCANCODE_ESCAPE, SDL_CONTROLLER_BUTTON_START },
-    { ec_inventory, L"inventory", SDL_SCANCODE_Q, SDL_CONTROLLER_BUTTON_BACK },
+    { ec_inventory, L"inventory", SDL_SCANCODE_TAB, SDL_CONTROLLER_BUTTON_Y },
+    { ec_interact, L"interact", SDL_SCANCODE_E, SDL_CONTROLLER_BUTTON_A },
+    { ec_useless1, L"x", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_LEFTSTICK },
+    { ec_useless2, L"x", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_RIGHTSTICK },
+    { ec_uselessback, L"x", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_BACK }
     //{ ec_, L"" },
 };
+bool lastEventMode = false;
 
 float get_state(en_inputaxis _ctrl) { return vAxis[_ctrl].state; }
 bool get_state(en_inputbtn _ctrl) { return vCtrls[_ctrl].state; }
-
+bool alt_mode() { return lastEventMode; }
 /*
 bool load(std::string _path)
 {
@@ -100,6 +108,7 @@ bool handle_input_event(SDL_Event& _evn)
     case SDL_KEYUP:
         if (_evn.key.repeat != 0)
             break;
+        lastEventMode = false;
         //keyboard button
         for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)); i++) {
             if (_evn.key.keysym.scancode == vCtrls[i].ctrlprim || _evn.key.keysym.scancode == vCtrls[i].ctrlalt)
@@ -116,6 +125,7 @@ bool handle_input_event(SDL_Event& _evn)
     case SDL_CONTROLLERBUTTONUP:
     case SDL_CONTROLLERBUTTONDOWN:
         //controller button
+        lastEventMode = true;
         for (int i = 0; i < (sizeof(vCtrls) / sizeof(*vCtrls)); i++) {
             if (_evn.cbutton.button == vCtrls[i].ctrlbtn) //
                 vCtrls[i].state = _evn.cbutton.state == SDL_PRESSED ? 1 : 0;
@@ -123,13 +133,17 @@ bool handle_input_event(SDL_Event& _evn)
         break;
     case SDL_CONTROLLERAXISMOTION:
         //controller axis
+        lastEventMode = true;
         for (int i = 0; i < (sizeof(vAxis) / sizeof(*vAxis)); i++) {
             if (_evn.caxis.axis == vAxis[i].gaxis)
-                vAxis[i].state = (_evn.caxis.value + 0.5f) / 32767.5f;
+                vAxis[i].state = (_evn.caxis.value + 1.0f) / 32767.f;
             else
                 continue;
         }
         break;
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+        lastEventMode = false;
     default:
         break;
     }
@@ -169,5 +183,12 @@ int y()
     return y;
 }
 void state(int* x, int* y) { SDL_GetMouseState(x, y); }
+pge::Pixel state()
+{
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return pge::Pixel(x, y);
+}
 void set(int x, int y) { SDL_WarpMouseInWindow(SDL_GetWindowFromID(window::get_target()->context->windowID), x, y); }
+void set(pge::Pixel p) { SDL_WarpMouseInWindow(SDL_GetWindowFromID(window::get_target()->context->windowID), p.x, p.y); }
 }
