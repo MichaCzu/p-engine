@@ -16,6 +16,8 @@ class State_Menu : public pge::State {
     bool TrigL1 = 0, TrigR1 = 0;
     bool DPadU = 0, DPadD = 0, DPadR = 0, DPadL = 0;
     bool ButtSel = 0, ButtSrt = 0, ButtA = 0, ButtB = 0, ButtY = 0, ButtX = 0, ButtGud = 0, ButtLS = 0, ButtRS = 0;
+    pge::Pixel player = { 0, 0 }, viewdir = { 1, 0 };
+    pge::Pixel moveVect = { 0, 0 };
 
 public:
     pge::text::Font
