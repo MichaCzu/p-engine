@@ -34,4 +34,5 @@ if [ -f CMakeLists.txt ]; then
     fi
   cd ..
   fi
+  exit 125
 fi
