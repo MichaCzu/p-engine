@@ -1,7 +1,7 @@
 // Engine variables definitions.
-#ifndef PGE_TYPES_HPP
-#define PGE_TYPES_HPP
+#pragma once
 #include <algorithm>
+#include <vector>
 
 namespace pge {
 struct Pixel {
@@ -28,7 +28,13 @@ struct Pixel {
         x = p2.x - p1.x;
         y = p2.y - p1.y;
     }
+	//Pixel(Pixel& p1)
+	//{
+		//x = p1.x;
+		//y = p1.y;
+	//}
 
+    static Pixel fromAngle(float r, float a);
     float distanceTo(Pixel& that);
     static float distance(Pixel& s1, Pixel& s2);
 
@@ -36,6 +42,8 @@ struct Pixel {
     Pixel deadzone(float zone);
     Pixel trim(float length);
     Pixel mod(float m);
+    Pixel rotate(float a);
+    float angle(Pixel p);
     float angle();
 
     Pixel operator+=(Pixel other) { return Pixel(this->x + other.x, this->y + other.y); }
@@ -45,6 +53,9 @@ struct Pixel {
     float operator*(Pixel other) { return this->x * other.x + this->y * other.y; }
     Pixel operator*(double other) const { return Pixel(this->x * other, this->y * other); }
     Pixel operator*=(double other) const { return Pixel(this->x * other, this->y * other); }
+	
+	bool operator==(Pixel other) const { return (this->x == other.x && this->y == other.y); }
+	bool operator!=(Pixel other) const { return !(*this == other); }
 
     static Pixel Zero() { return Pixel(0, 0); }
 };
@@ -88,6 +99,34 @@ struct Clip {
         r.h = _h;
     }
 };
-}
 
-#endif // TYPES_HPP
+template <typename T>
+class Matrix2D
+{
+	std::vector<T> inner_;
+//	std::vector<int> inner_;
+	unsigned int width, height;
+
+public:
+	Matrix2D(unsigned int _width, unsigned int _height)
+		: width(_width), height(_height)
+	{
+		inner_.resize(_width * _height);
+	}
+
+	T& operator()(unsigned int x, unsigned int y)
+	{
+		//if (x >= width || y >= height)
+			//throw std::out_of_range("matrix indices out of range"); // ouch
+		return inner_[width * y + x];
+	}
+
+	bool check(unsigned int x, unsigned int y)
+	{
+		return (x >= width || y >= height);
+	}
+	unsigned int w() { return width; }
+	unsigned int h() { return height; }
+};
+
+}

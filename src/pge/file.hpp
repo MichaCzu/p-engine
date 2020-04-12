@@ -1,11 +1,10 @@
 //zapisywanie i wczytywanie danych z pliku. ( niby zbędne ale dla czytelności potem )
-#ifndef PGE_FILE_HPP
-#define PGE_FILE_HPP
-
+#pragma once
 #include <string>
 #include <vector>
 
-namespace pge::file {
+namespace pge {
+	namespace file {
 bool init();
 bool close();
 bool remove(std::string path);
@@ -16,5 +15,4 @@ bool write(std::string path, std::wstring text, int mode = 0);
 
 std::vector<std::string> get_folderlist(std::string path);
 }
-
-#endif //FILEMAN_HPP
+}

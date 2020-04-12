@@ -1,10 +1,12 @@
 #include "pge/stateman.hpp"
+#include <string>
 class Controller;
 
 class State_Game : public pge::State {
     int w, h;
     float alpha;
     int fontf;
+    Controller* ctrl;
 
 public:
     State_Game() { init(); }

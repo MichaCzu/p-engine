@@ -86,6 +86,6 @@ namespace random {
         return 0;
     }
 
-    int32_t get(int32_t min, int32_t max) { return rand() % (max + 1 - min) + min; }
+    int get(int min, int max) { return rand() % (max + 1 - min) + min; }
 }
 }

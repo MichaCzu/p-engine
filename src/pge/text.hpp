@@ -1,6 +1,5 @@
 //zarządzanie czcionkami i wyświetlanie tekstu zgodnie z viewportem(jeśli trzeba) i skalą.
-#ifndef PGE_TEXT_HPP
-#define PGE_TEXT_HPP
+#pragma once
 
 #include <SDL2/SDL_ttf.h>
 #include <string>
@@ -58,5 +57,3 @@ namespace text {
     };
 }
 }
-
-#endif //WRITER_HPP

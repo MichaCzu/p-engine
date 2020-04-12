@@ -14,7 +14,8 @@ SDL_Color cColor = { 255, 255, 255, 255 };
 float cScale;
 uint16_t cDetail;
 
-namespace pge::draw {
+namespace pge {
+	namespace draw {
 
 SDL_Color get_pixel(Sint16 x, Sint16 y)
 {
@@ -49,9 +50,9 @@ void set_scale_factor(uint32_t _w, uint32_t _h, uint16_t _factor) // WIP
     float _hScale = _h / _factor;
 
     if (_hScale >= _wScale)
-        draw::set_scale(_wScale);
+        set_scale(_wScale);
     else
-        draw::set_scale(_hScale);
+        set_scale(_hScale);
 }
 
 void set_scale(float _scale)
@@ -83,7 +84,7 @@ float get_scale()
 }
 }
 
-namespace pge::viewport {
+namespace viewport {
 float get_xmoved(float _x, View* _vp)
 {
     return (_x - _vp->x);
@@ -121,21 +122,20 @@ bool contains(float _x, float _y, float _w, float _h, View* _vp)
 }
 }
 
-namespace pge::window {
+namespace window {
 void create(int width, int height, uint32_t window_flags,
     uint32_t renderer_flags)
 {
     SDL_Window* window;
-    GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC);
+	//GPU_SetPreInitFlags( GPU_INIT_USE_ROW_BY_ROW_TEXTURE_UPLOAD_FALLBACK );
     GPU_SetRequiredFeatures(GPU_FEATURE_ALL_BASE);
     pge::debug::log("flags set");
-    //window = SDL_CreateWindow("GameTest", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
-    //GPU_SetInitWindow(SDL_GetWindowID(window));
-    cTarget = GPU_InitRenderer(GPU_RENDERER_OPENGL_3, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+    
+	cTarget = GPU_InitRenderer(GPU_RENDERER_OPENGL_2, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
     pge::debug::log("window created");
-    //SDL_SetWindowMinimumSize(SDL_GetWindowFromID(cTarget->context->windowID), DEFAULT_WIN_MINWIDTH, DEFAULT_WIN_MINHEIGHT);
-    //if (DEFAULT_WIN_MAXWIDTH > 0 && DEFAULT_WIN_MAXHEIGHT > 0)
-    //    SDL_SetWindowMaximumSize(SDL_GetWindowFromID(cTarget->context->windowID), DEFAULT_WIN_MAXWIDTH, DEFAULT_WIN_MAXHEIGHT);
+    SDL_SetWindowMinimumSize(SDL_GetWindowFromID(cTarget->context->windowID), DEFAULT_WIN_MINWIDTH, DEFAULT_WIN_MINHEIGHT);
+    if (DEFAULT_WIN_MAXWIDTH > 0 && DEFAULT_WIN_MAXHEIGHT > 0)
+        SDL_SetWindowMaximumSize(SDL_GetWindowFromID(cTarget->context->windowID), DEFAULT_WIN_MAXWIDTH, DEFAULT_WIN_MAXHEIGHT);
 
     cCTarget = cTarget;
 }
@@ -218,6 +218,7 @@ void set_fullscreen(bool var)
         GPU_SetFullscreen(true, true);
     } else
         GPU_SetFullscreen(false, false);
+}
 }
 }
 ////////////Private////////////////////////////////////////////////////////////////////////////////////////////////

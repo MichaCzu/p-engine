@@ -1,6 +1,4 @@
-#ifndef PGE_CORE_HPP
-#define PGE_CORE_HPP
-
+#pragma once
 #include <SDL2/SDL.h>
 
 namespace pge {
@@ -29,9 +27,10 @@ void handle_statecalls();
 
 void redraw();
 void redraw_target(uint16_t _targetState);
+float get_defaultRps();
+float get_defaultFps();
 
 bool is_running();
 void quit();
 }
 
-#endif //PGE_CORE_HPP

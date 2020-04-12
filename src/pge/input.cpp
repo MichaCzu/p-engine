@@ -26,6 +26,8 @@ struct StructControls {
 };
 
 StructAxis vAxis[] = {
+	//{ ea_movex, L"move_x", SDL_CONTROLLER_AXIS_LEFTX, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT },
+	//{ ea_movey, L"move_y", SDL_CONTROLLER_AXIS_LEFTY, SDL_SCANCODE_UP, SDL_SCANCODE_DOWN },
     { ea_movex, L"move_x", SDL_CONTROLLER_AXIS_LEFTX, SDL_SCANCODE_A, SDL_SCANCODE_D },
     { ea_movey, L"move_y", SDL_CONTROLLER_AXIS_LEFTY, SDL_SCANCODE_W, SDL_SCANCODE_S },
     { ea_viewx, L"view_y", SDL_CONTROLLER_AXIS_RIGHTX },
@@ -47,7 +49,7 @@ StructControls vCtrls[] = {
     { ec_menu, L"menu", SDL_SCANCODE_ESCAPE, SDL_CONTROLLER_BUTTON_START },
     { ec_inventory, L"inventory", SDL_SCANCODE_TAB, SDL_CONTROLLER_BUTTON_Y },
     { ec_interact, L"interact", SDL_SCANCODE_E, SDL_CONTROLLER_BUTTON_A },
-    { ec_useless1, L"x", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_LEFTSTICK },
+    { ec_slowwalk, L"walk", SDL_SCANCODE_LSHIFT, SDL_CONTROLLER_BUTTON_LEFTSTICK, SDL_SCANCODE_RSHIFT },
     { ec_useless2, L"x", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_RIGHTSTICK },
     { ec_uselessback, L"x", SDL_SCANCODE_UNKNOWN, SDL_CONTROLLER_BUTTON_BACK }
     //{ ec_, L"" },

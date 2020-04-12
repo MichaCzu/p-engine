@@ -9,14 +9,12 @@ struct timer {
 
 class State_Intro : public pge::State {
 
-    pge::image::Sprite
-        sLogo{ "../res/spr/pgi/logo.pgs", nullptr },
-        sSpin{ "../res/spr/pgi/spin.pgs", nullptr },
-        sSout{ "../res/spr/pgi/sout.pgs", nullptr },
-        sPi{ "../res/spr/pgi/pi.pgs", nullptr },
-        sIlum{ "../res/spr/pgi/ilum.pgs", nullptr };
-    pge::sound::Chunk
-        mTheme{ "../res/mus/title.ogg" };
+    pge::image::Image
+        sLogo{ "../res/spr/pgi/logo.png" },
+        sSpin{ "../res/spr/pgi/spin.png" },
+        sSout{ "../res/spr/pgi/sout.png" },
+        sPi{ "../res/spr/pgi/pi.png" },
+        sIlum{ "../res/spr/pgi/ilum.png" };
     int w, h;
     uint8_t ePi = 1;
     uint8_t aPi = 0;

@@ -2,9 +2,13 @@
 #include "pge/core.hpp"
 #include "pge/debug.hpp"
 #include "pge/draw.hpp"
-#include <SDL2/SDL.h>
+#include "pge/types.hpp"
 #include <iostream>
+#include <time.h>
+#include <exception>
+#include <string>
 
+#include <cmath>
 #include <vector>
 
 int main(int argc, char* argv[])
@@ -13,27 +17,27 @@ int main(int argc, char* argv[])
     pge::state::push(pge::es_intro);
     pge::handle_statecalls();
 
-    //    float asd = 100;
-    //    i_expect_int(&asd);
-
     //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     // main game loop
 
-    while (pge::is_running()) {
-        //pge::handle_threadcalls();
-        pge::handle_allevents();
-        pge::update();
-        pge::window::clear();
-        pge::redraw();
-        pge::window::render();
-        pge::handle_statecalls();
-        pge::delay_frame_difference();
+	while (pge::is_running()) {
+		pge::handle_allevents();
+		pge::update();
+		pge::window::clear();
+		pge::redraw();
+		pge::window::render();
+		pge::handle_statecalls();
+		pge::delay_frame_difference();
+        //tStart = clock();
+        //double b = (double)(clock() - tStart) / CLOCKS_PER_SEC;
+        //pge::debug::log(std::to_string(a) + " " + std::to_string(b) + " " + std::to_string(a + b));
     }
 
-    //std::cout << "time: " << (clock_2 - clock_1) / double(CLOCKS_PER_SEC) * 1000 << ", ";
-
     // clearing session
-    pge::close();
+	pge::debug::log("closing");
+
+	pge::close();
+	pge::debug::log("perfect");
 
     return 0;
 }

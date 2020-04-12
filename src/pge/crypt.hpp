@@ -1,6 +1,5 @@
 //szyfrowanie stringów, plików i całych archiwów.
-#ifndef PGE_CRYPT_HPP
-#define PGE_CRYPT_HPP
+#pragma once
 
 #include "pge/constants.hpp"
 #include <stdlib.h>
@@ -18,8 +17,6 @@ namespace crypt {
 
 namespace random {
     bool set_seed(uint32_t seed = (uint32_t)(-1));
-    int32_t get(int32_t min, int32_t max);
+    int get(int min, int max);
 }
 }
-
-#endif //PGE_CRYPT_HPP

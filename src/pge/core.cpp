@@ -12,12 +12,13 @@
 #include "pge/pge.hpp"
 #include "pge/stateman.hpp"
 
-#include <chrono>
+
 #include <iostream>
 #include <stdint.h>
 #include <tgmath.h>
-#include <thread>
+#include <sched.h>
 #include <vector>
+#include <string>
 
 namespace pge {
 
@@ -46,6 +47,7 @@ bool init()
     const SDL_version* SDLIvl = IMG_Linked_Version();
     std::string IMG_Link = std::to_string(SDLIvl->major) + "." + std::to_string(SDLIvl->minor) + "." + std::to_string(SDLIvl->patch);
     std::string IMG_Comp = std::to_string(SDLvc.major) + "." + std::to_string(SDLvc.minor) + "." + std::to_string(SDLvc.patch);
+
 
     SDL_TTF_VERSION(&SDLvc);
     const SDL_version* SDLTvl = TTF_Linked_Version();
@@ -82,6 +84,7 @@ bool init()
         debug::log(IMG_GetError());
         return false;
     }
+
 
     // SDL_SetWindowIcon( window, sur_icon );
     debug::log("Initializing SDL_TTF.. " + TTF_Link + " (Compiled for " + TTF_Comp + ")..");
@@ -239,10 +242,19 @@ void handle_statecalls()
 
 //
 
-static const uint8_t _maxSamples = 30;
-static float _lastTick = 0, _diffTick[_maxSamples] = { 1 }, _lastDiff = 1;
-;
+static const uint8_t _maxSamples = 255;
+static float _lastTick = 0, _diffTick[_maxSamples] = { 0 }, _lastDiff = 0, _Ffps = 0, _tickSum = 0;
 static uint8_t selector;
+
+float get_defaultRps()
+{
+	return defaultRps;
+}
+
+float get_defaultFps()
+{
+	return defaultFps;
+}
 
 float set_defaultfps(float _newfps)
 {
@@ -253,7 +265,8 @@ float set_defaultfps(float _newfps)
     }
     float buffer = 1000 / _newfps;
     buffer = modf(buffer, &defaultFps);
-    defaultRps = buffer;
+	defaultFps = 1000 / _newfps;
+	defaultRps = buffer;
     return 1000 / defaultFps;
 }
 
@@ -271,13 +284,7 @@ uint16_t get_time_difference()
 
 uint16_t get_fps()
 {
-    uint32_t _fps = 0;
-    for (uint8_t j = 0; j < _maxSamples; j++) {
-        _fps += _diffTick[j];
-    }
-    if (_fps == 0)
-        _fps = 1;
-    return round(1000 / ((float)_fps / (float)_maxSamples));
+	return _Ffps;
 }
 
 void delay_frame_difference()
@@ -285,10 +292,9 @@ void delay_frame_difference()
     static float sum = 0;
     static int nextTick = 0;
 
-    //if (nextTick - SDL_GetTicks() > 0)
-    //    SDL_Delay(nextTick - SDL_GetTicks());
     while (nextTick > SDL_GetTicks()) {
-        std::this_thread::sleep_for(std::chrono::microseconds(200));
+		if (nextTick - SDL_GetTicks() > 1)
+			SDL_Delay(1);
     }
     uint32_t ticks = SDL_GetTicks();
     sum += defaultRps;
@@ -298,13 +304,19 @@ void delay_frame_difference()
         sum--;
     } else
         nextTick = ticks + defaultFps;
+	SDL_Delay(1);
 
-    _diffTick[selector] = ticks - _lastTick;
-    _lastDiff = ticks - _lastTick;
+	_tickSum -= _diffTick[selector];
+	_lastDiff = ticks - _lastTick;
+
+    _diffTick[selector] = _lastDiff;
+	_tickSum += _lastDiff;
     _lastTick = ticks;
+
     selector++;
-    if (selector == _maxSamples)
+    if (selector >= _maxSamples)
         selector = 0;
+	_Ffps = SDL_ceil(1000.f / SDL_max(_tickSum / (float)_maxSamples, 0.1f));
 }
 
 uint64_t get_time_passed()
@@ -312,10 +324,13 @@ uint64_t get_time_passed()
     return SDL_GetTicks();
 }
 
+
+bool sizeMoveTimerRunning = false;
 void handle_allevents()
 {
     static SDL_Event _event;
     while (SDL_PollEvent(&_event)) {
+        pge::input::handle_input_event(_event);
         if (_event.type == SDL_CONTROLLERDEVICEADDED) {
             SDL_GameController* controller = NULL;
             if (SDL_IsGameController(_event.cdevice.which))
@@ -330,7 +345,6 @@ void handle_allevents()
             continue;
         }
         if (_event.type == SDL_MOUSEMOTION) {
-
             continue;
         }
         if (_event.type == SDL_WINDOWEVENT) {
@@ -339,7 +353,7 @@ void handle_allevents()
             case SDL_WINDOWEVENT_SIZE_CHANGED:
             case SDL_WINDOWEVENT_RESIZED:
             case SDL_WINDOWEVENT_MAXIMIZED:
-                pge::debug::log("Window resized to " + std::to_string(_event.window.data1) + "x" + std::to_string(_event.window.data2));
+                //pge::debug::log("Window resized to " + std::to_string(_event.window.data1) + "x" + std::to_string(_event.window.data2));
                 pge::window::set_resolution(_event.window.data1, _event.window.data2);
                 continue;
             }

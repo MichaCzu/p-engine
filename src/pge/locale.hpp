@@ -1,6 +1,5 @@
 //managing game controls, getting text input.
-#ifndef PGE_LOCALE_HPP
-#define PGE_LOCALE_HPP
+#pragma once
 
 #include <string>
 
@@ -31,11 +30,12 @@ enum en_transl {
 };
 std::wstring tr(en_transl _key);
 
-namespace pge::locale {
+namespace pge {
+	namespace locale {
 
-bool load(std::string _path); //reads file with translations that overwrite defaults
-bool setfallback(std::string _path);
-std::wstring get(en_transl _key);
-void resort();
+		bool load(std::string _path); //reads file with translations that overwrite defaults
+		bool setfallback(std::string _path);
+		std::wstring get(en_transl _key);
+		void resort();
+	}
 }
-#endif //TRANSLATOR_HPP

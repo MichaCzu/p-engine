@@ -27,13 +27,19 @@ void State_Intro::cleanup()
 
 void State_Intro::handle_events(SDL_Event _event)
 {
-    if (_event.type == SDL_KEYDOWN && counter < 4000)
-        counter = 5000;
+    switch (_event.type) {
+    case SDL_KEYDOWN:
+    case SDL_CONTROLLERBUTTONDOWN:
+        if (counter < 4000)
+            counter = 5000;
+        break;
+    default:
+        break;
+    }
 }
 
 void State_Intro::update()
 {
-
     //Pi
     if (counter > tPi[ePi].s)
         ePi++;
@@ -53,8 +59,8 @@ void State_Intro::draw()
         counter += pge::get_time_difference();
     if (counter >= 5000) {
         counter = 5000;
-        pge::debug::log("changing state to menu...");
-        pge::state::drop(pge::es_menu);
+        //pge::debug::log("changing state to game...");
+        pge::state::drop(pge::es_game);
     }
 
     pge::window::get_size(&w, &h);
@@ -63,13 +69,11 @@ void State_Intro::draw()
     pge::Rect s2 = { 428, 38, 327, 284 };
     pge::Rect s3 = { 768, 77, 235, 205 };
 
-    float scale;
-    if (h >= 1440 and w >= 2560)
+    float scale = 0.5;
+    if (h >= 1440 && w >= 2560)
         scale = 2;
-    else if (h >= 720 and w >= 1280)
+    else if (h >= 720 && w >= 1280)
         scale = 1;
-    else
-        scale = 0.5;
 
     int sLW = sLogo.get_width() / 2 * scale;
     int sPW = sPi.get_width() / 2 * scale;

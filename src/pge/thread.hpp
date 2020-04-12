@@ -1,6 +1,5 @@
 //zapisywanie i wczytywanie danych z pliku. ( niby zbędne ale dla czytelności potem )
-#ifndef PGE_THREAD_HPP
-#define PGE_THREAD_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -22,5 +21,3 @@ namespace thread {
     void* wait_return();
 }
 }
-
-#endif //PGE_THREAD_HPP

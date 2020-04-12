@@ -1,6 +1,5 @@
 // Loading, managing and playing sounds and music.
-#ifndef PGE_SOUND_H
-#define PGE_SOUND_H
+#pragma once
 
 #include <SDL2/SDL_mixer.h>
 #include <stdint.h>
@@ -54,5 +53,3 @@ namespace music {
     };
 }
 }
-
-#endif // JUKEBOX_HPP
