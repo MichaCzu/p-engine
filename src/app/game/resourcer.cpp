@@ -15,10 +15,8 @@ pge::image::Image* Resourcer::load_image(std::string path)
 		imgLoadingQueue.push_back(returnData);
 	}
 
-	//pge::debug::log(path+": "+std::to_string(hash));
 	returnData->users++;
 	return &returnData->image;
-	//return nullptr;
 }
 
 pge::sound::Chunk* Resourcer::load_sound(std::string path)
