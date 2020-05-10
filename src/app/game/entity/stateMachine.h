@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 enum EntityStateEnum
 {
 	Idle,
@@ -25,8 +27,15 @@ public:
 
 class EntityStateMachine
 {
-
+	std::vector<EntityState> states;
 public:
-	void setup(EntityState* initalState) {}
-	void update(uint16_t diff) {}
+	void setup(EntityState initialState) 
+	{
+		states.push_back(initialState);
+	}
+	void update(uint16_t diff) 
+	{
+		if(!states.empty())
+			states.back().update(diff);
+	}
 };
