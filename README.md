@@ -2,6 +2,10 @@
 
 ShatteredLands
 
+## Update
+
+Project is no longer maintained nor developed. Setup might be problematic, so please keep this in mind.
+
 ## Building:
 
 For building i have prepared a simple bash script that will run cmake from bin directory (which should also contain all app resources), and then make to create executable. simply run this in the console.
@@ -20,7 +24,7 @@ Windows
 
 Otherwise just use cmake and then make to compile and run this project.
 
-## Requirements?
+## Used libraries?
 
 - SDL2
 - SDL2_image
