@@ -1,7 +1,3 @@
-# README
-
-ShatteredLands
-
 ## Update
 
 Project is no longer maintained nor developed. Setup might be problematic, so please keep this in mind.
