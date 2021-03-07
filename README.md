@@ -1,5 +1,4 @@
-## No longer updated
-
+## Depracted
 Project is no longer maintained nor developed. Setup might be problematic, so please keep this in mind.
 
 ## Building:
@@ -19,6 +18,12 @@ Windows
 ```
 
 Otherwise just use cmake and then make to compile and run this project.
+
+## Showcase
+
+Following game was developed using the engine: </br>
+[Showcase #1](https://www.youtube.com/watch?v=_zvZLyynJ-w) </br>
+[Showcase #2](https://www.youtube.com/watch?v=NfQs-6bUn7g)
 
 ## Used libraries?
 
